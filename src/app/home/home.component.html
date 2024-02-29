@@ -72,6 +72,22 @@
               />
             </label>
             <label for="send" class="flex gap-4">
+              @if (this.showEditProduct()) {
+              <button
+                (click)="editProduct()"
+                class="bg-sky-400 px-4 py-2 rounded-xl"
+                [disabled]="!form.valid"
+              >
+                Guardar
+              </button>
+              <button
+              (click)="cancelEdit()"
+              class="bg-gray-400 px-4 py-2 rounded-xl"
+              [disabled]="!form.valid"
+            >
+              Cancelar
+            </button>
+              } @else {
               <button
                 (click)="createProductHandle()"
                 name="send"
@@ -80,19 +96,20 @@
               >
                 Crear
               </button>
+              }
             </label>
           </form>
         </div>
       </div>
       } @else { @for (product of products(); track $index) {
-      <li class="flex justify-between py-2 px-6 rounded-xl">
+      <li class="flex justify-between py-4 px-6 rounded-xl">
         <div class="grid text-center">
           <label class="text-blue-400 font-medium">Nombre:</label>
           <span>{{ product.name | titlecase }}</span>
         </div>
         <div class="grid text-center">
           <label class="text-blue-400 font-medium">Precio:</label>
-          <span>{{ product.price }}</span>
+          <span>{{ product.price | currency : "COP" : "$" }}</span>
         </div>
         <div class="grid text-center">
           <label class="text-blue-400 font-medium">Cantidad</label>
@@ -103,7 +120,12 @@
           <span>{{ product.description }}</span>
         </div>
         <div class="flex items-center gap-8">
-          <button class="bg-sky-400 px-4 py-2 rounded-xl">Editar</button>
+          <button
+            class="bg-sky-400 px-4 py-2 rounded-xl"
+            (click)="handleEditProduct(product)"
+          >
+            Editar
+          </button>
           <button
             class="bg-red-400 px-4 py-2 rounded-xl"
             (click)="deleteProduct(product?.id || 0)"

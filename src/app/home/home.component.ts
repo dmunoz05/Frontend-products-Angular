@@ -21,25 +21,23 @@ export class HomeComponent implements OnInit {
       this.localStorage = document.defaultView?.localStorage || null;
 
   }
-
   form = new FormGroup({
+    id: new FormControl<number>(0),
     name: new FormControl<string>('Nombre'),
     price: new FormControl<number>(0),
     quantity: new FormControl<number>(0),
-    description: new FormControl<string>('Description')
+    description: new FormControl<string>('Descripción')
   }, {
     validators: [
       Validators.required,
     ]
   })
 
-  token: string = ''
+  token: string = localStorage.getItem('token') || ''
   showProducts = signal<boolean>(false)
+  showEditProduct = signal<boolean>(false)
   products = signal<productInterface[]>([])
   newProduct = signal<productInterface[]>([])
-  if(localStorage: any){
-    this.token = localStorage.getItem('token') || ''
-  }
 
   ngOnInit() {
     this.getProducts()
@@ -70,11 +68,24 @@ export class HomeComponent implements OnInit {
 
   showCreateProduct() {
     this.showProducts.set(!this.showProducts())
+    this.newProduct.set([])
+  }
+
+  handleEditProduct(product: productInterface) {
+    this.showProducts.set(!this.showProducts())
+    this.newProduct.set([])
+    this.form.setValue({
+      id: product.id || 0,
+      name: product.name,
+      price: product.price,
+      quantity: product.quantity,
+      description: product.description
+    })
+    this.showEditProduct.set(true)
   }
 
   createProductHandle() {
     const formData = this.form.value;
-
     // Crear un nuevo objeto que coincida con productInterface
     const newProduct: productInterface = {
       name: formData.name || '',
@@ -86,7 +97,31 @@ export class HomeComponent implements OnInit {
     this.homeService.createProduct(newProduct, this.token).subscribe((data: any) => {
       this.products.set(data);
       this.getProducts();
-      this.showProducts.set(false);
+      this.showProducts.set(!this.showProducts());
     });
+  }
+
+  cancelEdit() {
+    this.showProducts.set(false)
+    this.showEditProduct.set(false)
+  }
+
+  editProduct() {
+    const formData = this.form.value;
+    // Crear un nuevo objeto que coincida con productInterface
+    const newProduct: productInterface = {
+      name: formData.name || '',
+      price: formData.price || 0,
+      quantity: formData.quantity || 0,
+      description: formData.description || ''
+    };
+    const id = formData.id || 0;
+
+    this.homeService.updateProduct(id, newProduct, this.token).subscribe((data: any) => {
+      this.products.set(data)
+      this.getProducts()
+      this.showProducts.set(!this.showProducts())
+      this.showEditProduct.set(false)
+    })
   }
 }

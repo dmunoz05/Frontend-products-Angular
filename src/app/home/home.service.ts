@@ -11,7 +11,7 @@ export interface productInterface {
   description: string
 }
 
-export interface productDeletInterface {
+export interface productResponseInterface {
   message : string
   product : { id: number }
 }
@@ -43,7 +43,7 @@ export class HomeService {
     )
   }
 
-  deleteProduct(id: number, tokenStorage: string): Observable<productDeletInterface[]> {
+  deleteProduct(id: number, tokenStorage: string): Observable<productResponseInterface[]> {
     const token: string = this.loginService.responseLogin?.token || tokenStorage;
     return this.http.delete(`http://localhost:3000/product/${id}`, {
       headers: {
@@ -74,4 +74,21 @@ export class HomeService {
       })
     )
   }
+
+  updateProduct(id: number, body: productInterface, tokenStorage: string) : Observable<productResponseInterface[]> {
+    const token: string = this.loginService.responseLogin?.token || tokenStorage;
+    return this.http.put<productResponseInterface[]>(`http://localhost:3000/product/${id}`, body, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }).pipe(
+      map((data: any) => {
+        return data;
+      }), catchError((error) => {
+        return of(error);
+      })
+    )
+  }
+
 }
