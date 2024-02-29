@@ -34,6 +34,8 @@ export class LoginComponent {
   login() {
     this.loginService.loginUser(this.username(), this.password()).subscribe((loggedIn: boolean) => {
       if (loggedIn) {
+        //Guardar token en localstorage
+        localStorage.setItem('token', this.loginService.responseLogin?.token || '');
         this.router.navigate(['/home']);
       } else {
         this.username.set('')

@@ -1,4 +1,4 @@
-import { Injectable, WritableSignal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 
@@ -31,7 +31,6 @@ export class LoginService {
       }
     }).pipe(
       map((data: loginInterface) => {
-        debugger
         this.responseLogin = data;
         return data.token !== undefined;
       })

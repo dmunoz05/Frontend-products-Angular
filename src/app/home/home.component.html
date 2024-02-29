@@ -1,1 +1,33 @@
-<p>home works!</p>
+<div class="h-screen w-full p-4">
+  <div class="flex justify-center">
+    <h1 class="text-3xl font-bold py-4">Lista de Productos</h1>
+  </div>
+  <div>
+    <ul class="grid gap-4 [&>li]:bg-gray-800 [&>li]:h-fit">
+      @for (product of products(); track $index) {
+        <li class="flex justify-between p-2 rounded-xl">
+          <div class="grid text-center">
+            <label class="text-blue-400 font-medium">Nombre:</label>
+            <span>{{ product.name | titlecase }}</span>
+          </div>
+          <div class="grid text-center">
+            <label class="text-blue-400 font-medium">Precio:</label>
+            <span>{{ product.price }}</span>
+          </div>
+          <div class="grid text-center">
+            <label class="text-blue-400 font-medium">Cantidad</label>
+            <span>{{ product.quantity }}</span>
+          </div>
+          <div class="grid text-center">
+            <label class="text-blue-400 font-medium">Descripcion</label>
+            <span>{{ product.description }}</span>
+          </div>
+          <div class="flex items-center gap-8">
+            <button class="bg-sky-400 px-4 py-4 rounded-xl">Editar</button>
+            <button class="bg-red-400 px-4 py-4 rounded-xl">Eliminar</button>
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
+</div>
