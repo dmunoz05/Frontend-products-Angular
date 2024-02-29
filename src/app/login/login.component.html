@@ -1,0 +1,43 @@
+<div class="h-screen w-full grid place-items-center">
+  <div class="p-8 text-center">
+    <div class="my-8">
+      <h1 class="text-5xl">
+        ¡¡Bienvenido a Product<span class="text-sky-500">Get</span>!!
+      </h1>
+    </div>
+    <div class="bg-slate-300 h-full w-full rounded-xl px-12 py-8 grid gap-5">
+      <h1 class="text-3xl text-sky-600 font-bold">Iniciar Session</h1>
+      <label for="username">
+        <input
+          type="text"
+          class="p-4 w-full rounded-xl outline-none"
+          placeholder="Ingrese el usuario"
+          [value]="username()"
+          (change)="handleUserName($event)"
+        />
+      </label>
+
+      <label for="password">
+        <input
+          type="password"
+          class="p-4 w-full rounded-xl outline-none"
+          placeholder="Ingrese la contraseña"
+          [value]="password()"
+          (change)="handleUserPassword($event)"
+        />
+      </label>
+      <button
+        (click)="login()"
+        class="bg-sky-600 rounded-xl p-4 flex flex-row justify-center"
+      >
+        Ingresar
+      </button>
+
+      @if (showMessage()) {
+        <div>
+          <span class=" text-red-500">{{ message() }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</div>
