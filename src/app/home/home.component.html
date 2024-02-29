@@ -3,31 +3,116 @@
     <h1 class="text-3xl font-bold py-4">Lista de Productos</h1>
   </div>
   <div>
+    <button
+      class="bg-sky-400 py-2 px-6 rounded-xl"
+      (click)="showCreateProduct()"
+    >
+      Crear Producto
+    </button>
+  </div>
+  <div class="py-4">
     <ul class="grid gap-4 [&>li]:bg-gray-800 [&>li]:h-fit">
-      @for (product of products(); track $index) {
-        <li class="flex justify-between p-2 rounded-xl">
-          <div class="grid text-center">
-            <label class="text-blue-400 font-medium">Nombre:</label>
-            <span>{{ product.name | titlecase }}</span>
+      @if (products().length === 0 && showProducts() == false) {
+      <li class="flex justify-center p-4 rounded-xl">
+        <div>
+          <label class="text-blue-400 font-medium"
+            >No se encontraron productos</label
+          >
+        </div>
+      </li>
+      } @else if ( showProducts()) {
+      <div>
+        <div>
+          <div class="py-2 mb-4">
+            <h1 class="text-2xl">Ingresa un nuevo producto</h1>
           </div>
-          <div class="grid text-center">
-            <label class="text-blue-400 font-medium">Precio:</label>
-            <span>{{ product.price }}</span>
-          </div>
-          <div class="grid text-center">
-            <label class="text-blue-400 font-medium">Cantidad</label>
-            <span>{{ product.quantity }}</span>
-          </div>
-          <div class="grid text-center">
-            <label class="text-blue-400 font-medium">Descripcion</label>
-            <span>{{ product.description }}</span>
-          </div>
-          <div class="flex items-center gap-8">
-            <button class="bg-sky-400 px-4 py-4 rounded-xl">Editar</button>
-            <button class="bg-red-400 px-4 py-4 rounded-xl">Eliminar</button>
-          </div>
-        </li>
-      }
+          <form [formGroup]="form" class="grid gap-2">
+            <label for="name" class="flex gap-4">
+              <div class="w-20">
+                <span>Nombre</span>
+              </div>
+              <input
+                [formControl]="form.controls.name"
+                class="p-2 outline-none rounded-xl"
+                type="text"
+                name="name"
+              />
+            </label>
+            <label for="price" class="flex gap-4">
+              <div class="w-20">
+                <span>Precio</span>
+              </div>
+              <input
+                [formControl]="form.controls.price"
+                class="p-2 outline-none rounded-xl"
+                type="number"
+                name="price"
+              />
+            </label>
+            <label for="quantity" class="flex gap-4">
+              <div class="w-20">
+                <span>Cantidad</span>
+              </div>
+              <input
+                [formControl]="form.controls.quantity"
+                class="p-2 outline-none rounded-xl"
+                type="number"
+                name="quantity"
+              />
+            </label>
+            <label for="description" class="flex gap-4">
+              <div class="w-20">
+                <span>Descripción</span>
+              </div>
+              <input
+                [formControl]="form.controls.description"
+                class="p-2 outline-none rounded-xl"
+                type="text"
+                name="description"
+              />
+            </label>
+            <label for="send" class="flex gap-4">
+              <button
+                (click)="createProductHandle()"
+                name="send"
+                class="bg-sky-400 px-4 py-2 rounded-xl"
+                [disabled]="!form.valid"
+              >
+                Crear
+              </button>
+            </label>
+          </form>
+        </div>
+      </div>
+      } @else { @for (product of products(); track $index) {
+      <li class="flex justify-between py-2 px-6 rounded-xl">
+        <div class="grid text-center">
+          <label class="text-blue-400 font-medium">Nombre:</label>
+          <span>{{ product.name | titlecase }}</span>
+        </div>
+        <div class="grid text-center">
+          <label class="text-blue-400 font-medium">Precio:</label>
+          <span>{{ product.price }}</span>
+        </div>
+        <div class="grid text-center">
+          <label class="text-blue-400 font-medium">Cantidad</label>
+          <span>{{ product.quantity }}</span>
+        </div>
+        <div class="grid text-center">
+          <label class="text-blue-400 font-medium">Descripcion</label>
+          <span>{{ product.description }}</span>
+        </div>
+        <div class="flex items-center gap-8">
+          <button class="bg-sky-400 px-4 py-2 rounded-xl">Editar</button>
+          <button
+            class="bg-red-400 px-4 py-2 rounded-xl"
+            (click)="deleteProduct(product?.id || 0)"
+          >
+            Eliminar
+          </button>
+        </div>
+      </li>
+      } }
     </ul>
   </div>
 </div>

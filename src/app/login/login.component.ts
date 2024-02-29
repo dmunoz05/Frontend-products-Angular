@@ -18,6 +18,7 @@ export class LoginComponent {
   password = signal('')
   message = signal('')
   showMessage = signal(false)
+  localStorage = document.defaultView?.localStorage;
 
   handleUserName(event: Event) {
     const inputUserName = event.target as HTMLInputElement

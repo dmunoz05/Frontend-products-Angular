@@ -1,29 +1,59 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit, signal } from '@angular/core';
 import { HomeService } from './home.service';
 import { productInterface } from './home.service';
 import { Router } from '@angular/router';
+import { FormControl, FormsModule, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private homeService: HomeService, private router: Router) { }
+  localStorage: any;
 
+  constructor(private homeService: HomeService, private router: Router) {
+    if(document !== undefined)
+      this.localStorage = document.defaultView?.localStorage || null;
+
+  }
+
+  form = new FormGroup({
+    name: new FormControl<string>('Nombre'),
+    price: new FormControl<number>(0),
+    quantity: new FormControl<number>(0),
+    description: new FormControl<string>('Description')
+  }, {
+    validators: [
+      Validators.required,
+    ]
+  })
+
+  token: string = ''
+  showProducts = signal<boolean>(false)
   products = signal<productInterface[]>([])
-
-  token: string = localStorage.getItem('token') || ''
+  newProduct = signal<productInterface[]>([])
+  if(localStorage: any){
+    this.token = localStorage.getItem('token') || ''
+  }
 
   ngOnInit() {
+    this.getProducts()
+  }
+
+  getProducts() {
     this.homeService.getProducts(this.token).subscribe((data: productInterface[]) => {
-      if(data.length >= 0){
+      if (data.length > 0) {
         this.products.set(data)
-      } else {
+      }
+      else if (data.length === 0) {
+        this.products.set([])
+      }
+      else {
         this.router.navigate(['/'])
       }
     }, error => {
@@ -31,4 +61,32 @@ export class HomeComponent implements OnInit {
     })
   }
 
+  deleteProduct(id: number) {
+    this.homeService.deleteProduct(id, this.token).subscribe((data: any) => {
+      this.products.set(data)
+      this.getProducts()
+    })
+  }
+
+  showCreateProduct() {
+    this.showProducts.set(!this.showProducts())
+  }
+
+  createProductHandle() {
+    const formData = this.form.value;
+
+    // Crear un nuevo objeto que coincida con productInterface
+    const newProduct: productInterface = {
+      name: formData.name || '',
+      price: formData.price || 0,
+      quantity: formData.quantity || 0,
+      description: formData.description || ''
+    };
+
+    this.homeService.createProduct(newProduct, this.token).subscribe((data: any) => {
+      this.products.set(data);
+      this.getProducts();
+      this.showProducts.set(false);
+    });
+  }
 }
